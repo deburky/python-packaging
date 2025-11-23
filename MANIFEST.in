@@ -1,0 +1,2 @@
+graft src
+recursive-exclude __pychache__ *.py[cod]
