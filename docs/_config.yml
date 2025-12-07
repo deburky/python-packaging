@@ -1,0 +1,8 @@
+title: First Python Package
+description: A Python package demonstrating modern packaging practices with Cython extensions
+theme: jekyll-theme-cayman
+show_downloads: true
+github:
+  repository_url: https://github.com/deburky/python-packaging
+  is_project_page: true
+
