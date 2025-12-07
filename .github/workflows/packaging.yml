@@ -42,10 +42,7 @@ jobs:
         steps:
             - name: Check accessibility
               run: |
-                echo Checking ${{ matrix.text-color.value }}
-                on ${{ matrix.background-color.value }}
-                for ${{ matrix.standard.name }}
-                level ${{ matrix.standard.level }}
+                echo "Checking ${{ matrix.text-color.value }} on ${{ matrix.background-color.value }} for ${{ matrix.standard.name }} level ${{ matrix.standard.level }}"
 
     test:
         name: Test
