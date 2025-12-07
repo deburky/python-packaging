@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# .env
+.env
+
 # Cython build artifacts
 *.c
 *.so
