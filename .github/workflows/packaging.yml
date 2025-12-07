@@ -18,3 +18,55 @@ jobs:
 
             - name: Run black
               run: tox -e format
+
+    test-color-a11y:
+        name: Test color accessibility
+        runs-on: ubuntu-latest
+        
+        strategy:
+            matrix:
+                text-color:
+                    - value: "#000000"
+                    - value: "#33A5F3"
+                    - value: "#59FFE9"
+                    - value: "#999999"
+                background-color:
+                    - value: "#000000"
+                    - value: "#336633"
+                    - value: "#989A5F"
+                standard:
+                    - name: "WCAG"
+                      level: "AA"
+                    - name: "WCAG"
+                      level: "AAA"
+        steps:
+            - name: Check accessibility
+              run: |
+                echo Checking ${{ matrix.text-color.value }}
+                on ${{ matrix.background-color.value }}
+                for ${{ matrix.standard.name }}
+                level ${{ matrix.standard.level }}
+
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python:
+                    - version: "3.10"
+                      toxenv: "py310"
+                    - version: "3.9"
+                      toxenv: "py39"
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: actions/setup-python@v4.0.0
+              with:
+                python-version: ${{ matrix.python.version }}
+
+            - name: Install tox
+              run: python -m pip install tox
+
+            - name: Run pytest
+              run: tox -e ${{ matrix.python.toxenv }}
+    
