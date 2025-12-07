@@ -83,9 +83,10 @@ jobs:
             - name: Run build
               run: python -m build --sdist
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
-                path: first-python-package/dist/*.tar.gz
+                name: source-dist
+                path: dist/*.tar.gz
 
     build_wheels:
         name: Build wheels on ${{ matrix.os }}
@@ -107,19 +108,21 @@ jobs:
             - name: Build wheels
               run: python -m cibuildwheel --output-dir wheels
     
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
-                path: ./first-python-package/wheels/*.whl # Update to match root of package
+                name: wheels-${{ matrix.os }}
+                path: wheels/*.whl
 
     publish_to_test_pypi:
         name: Publish to Test PyPI
         needs: [build_source_dist, build_wheels]
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/download-artifact@v3
+            - uses: actions/download-artifact@v4
               with:
-                name: artifact
+                pattern: '*'
                 path: dist
+                merge-multiple: true
 
             - uses: pypa/gh-action-pypi-publish@release/v1
               with:
