@@ -1,0 +1,158 @@
+/* Baseline Light theme overrides for GitHub Pages (Cayman) */
+/* Colors from Baseline Light VS Code theme */
+
+:root {
+  --baseline-bg: #ffffff;
+  --baseline-fg: #383a42;
+  --baseline-muted: #5c6370;
+  --baseline-muted-light: #b6b9c5;
+  --baseline-border: #e6eaed;
+  --baseline-surface: #f8f9fa;
+  --baseline-surface-alt: #fafafa;
+  --baseline-accent: #528bff;
+  --baseline-accent-light: #62afef;
+  --baseline-link: #62afef;
+  --baseline-link-active: #528bff;
+  --baseline-code-bg: #f8f9fa;
+  --baseline-blockquote-border: #e6eaed;
+  --baseline-heading: #62afef;
+  --baseline-keyword: #e16d76;
+  --baseline-string: #d19a66;
+  --baseline-comment: #5c6370;
+  --baseline-number: #c678de;
+}
+
+/* Body and main content */
+body {
+  color: var(--baseline-fg) !important;
+  background-color: var(--baseline-bg) !important;
+}
+
+a {
+  color: var(--baseline-link) !important;
+}
+
+a:hover {
+  color: var(--baseline-link-active) !important;
+}
+
+/* Page header (hero section) */
+.page-header {
+  color: #ffffff !important;
+  background-color: var(--baseline-accent) !important;
+  background-image: linear-gradient(120deg, var(--baseline-accent-light), var(--baseline-accent)) !important;
+}
+
+.project-name,
+.project-tagline {
+  color: #ffffff !important;
+}
+
+.project-tagline {
+  opacity: 0.9 !important;
+}
+
+/* Main content area */
+.main-content {
+  color: var(--baseline-fg) !important;
+}
+
+.main-content h1,
+.main-content h2,
+.main-content h3,
+.main-content h4,
+.main-content h5,
+.main-content h6 {
+  color: var(--baseline-heading) !important;
+  font-weight: 600 !important;
+}
+
+.main-content p {
+  color: var(--baseline-fg) !important;
+}
+
+/* Blockquotes */
+.main-content blockquote {
+  color: var(--baseline-muted) !important;
+  border-left-color: var(--baseline-border) !important;
+  background-color: var(--baseline-surface) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0 0.25rem 0.25rem 0 !important;
+}
+
+/* Code blocks and inline code */
+.main-content code {
+  color: var(--baseline-fg) !important;
+  background-color: var(--baseline-code-bg) !important;
+  border: 1px solid var(--baseline-border) !important;
+}
+
+.main-content pre {
+  color: var(--baseline-fg) !important;
+  background-color: var(--baseline-code-bg) !important;
+  border-color: var(--baseline-border) !important;
+}
+
+.main-content pre code {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Buttons (e.g. Download .zip) */
+.btn {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.btn:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Tables */
+.main-content table th,
+.main-content table td {
+  border-color: var(--baseline-border) !important;
+}
+
+.main-content table th {
+  color: var(--baseline-fg) !important;
+  background-color: var(--baseline-surface) !important;
+}
+
+/* Horizontal rule */
+.main-content hr {
+  background-color: var(--baseline-border) !important;
+}
+
+/* Footer */
+.site-footer {
+  border-top-color: var(--baseline-border) !important;
+  color: var(--baseline-muted) !important;
+}
+
+.site-footer-credits {
+  color: var(--baseline-muted) !important;
+}
+
+.site-footer a {
+  color: var(--baseline-link) !important;
+}
+
+/* Kbd (keyboard keys) */
+.main-content kbd {
+  background-color: var(--baseline-surface) !important;
+  border-color: var(--baseline-border) !important;
+  border-bottom-color: var(--baseline-muted-light) !important;
+  color: var(--baseline-fg) !important;
+  box-shadow: inset 0 -1px 0 var(--baseline-muted-light) !important;
+}
+
+/* Skip to content focus (accessibility) */
+#skip-to-content:focus {
+  background: var(--baseline-fg) !important;
+  color: var(--baseline-bg) !important;
+  outline-color: var(--baseline-fg) !important;
+}

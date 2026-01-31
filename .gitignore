@@ -61,3 +61,7 @@ coverage.xml
 
 # VS Code
 .vscode/
+
+# Jekyll / Bundler (docs)
+.bundle/
+vendor/bundle/

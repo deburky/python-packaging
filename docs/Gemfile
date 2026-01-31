@@ -1,0 +1,8 @@
+# Gemfile for GitHub Pages / Jekyll (docs site)
+# Use Ruby 3.x (e.g. rbenv install 3.2.0); see docs/README.md
+source "https://rubygems.org"
+
+gem "jekyll", "~> 3.9"
+gem "jekyll-theme-cayman"
+gem "kramdown-parser-gfm"
+gem "webrick", "~> 1.8"

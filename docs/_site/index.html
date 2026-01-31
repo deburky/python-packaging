@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Python Packaging | First Python Package</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Python Packaging" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A Python package demonstrating modern packaging practices with Cython extensions" />
+<meta property="og:description" content="A Python package demonstrating modern packaging practices with Cython extensions" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="First Python Package" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Python Packaging" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"A Python package demonstrating modern packaging practices with Cython extensions","headline":"Python Packaging","name":"First Python Package","url":"http://localhost:4000/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <link rel="stylesheet" href="/assets/css/baseline.css">
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Python Packaging</h1>
+      <h2 class="project-tagline">A Python package demonstrating modern packaging practices with Cython extensions</h2>
+      
+        <a href="https://github.com/deburky/python-packaging" class="btn">View on GitHub</a>
+      
+      
+        <a href="" class="btn">Download .zip</a>
+        <a href="" class="btn">Download .tar.gz</a>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="python-packaging">Python Packaging</h1>
+
+<p><strong>Note:</strong> This repo is based on the book <a href="https://pypackages.com/">Publishing Python Packages: Test, Share, and Automate Your Projects</a>. The code examples from the book are available here: <a href="https://github.com/PacktPublishing/Python-Project-Setup-Guide/tree/main/Chapter03/examples">GitHub</a>.</p>
+
+<h2 id="package-features">Package Features</h2>
+
+<ul>
+  <li><strong>Build system</strong>: <code class="language-plaintext highlighter-rouge">setuptools</code> with <code class="language-plaintext highlighter-rouge">setup.cfg</code> configuration</li>
+  <li><strong>Cython extension</strong>: Includes compiled <code class="language-plaintext highlighter-rouge">harmonic_mean</code> module for performance</li>
+  <li><strong>Dependencies</strong>: Uses <code class="language-plaintext highlighter-rouge">numpy</code> for numerical operations and <code class="language-plaintext highlighter-rouge">termcolor</code> for colored output</li>
+  <li><strong>Entry point</strong>: Provides <code class="language-plaintext highlighter-rouge">harmony</code> CLI command</li>
+</ul>
+
+<p><strong>Important:</strong> This package uses <strong>Cython extensions</strong> that compile to platform-specific binaries. We use <code class="language-plaintext highlighter-rouge">cibuildwheel</code> in CI/CD to build wheels for Linux, Windows, and macOS (Intel + Apple Silicon). Without pre-built wheels, users would need a C compiler and build tools installed.</p>
+
+<p><strong>Alternative build backends</strong>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">hatchling</code> - Modern, pure Python build backend (default in <code class="language-plaintext highlighter-rouge">uv</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">poetry-core</code> - Used by Poetry projects</li>
+  <li><code class="language-plaintext highlighter-rouge">maturin</code> - For Rust-based packages (see below)</li>
+</ul>
+
+<h3 id="why-maturin-for-rust">Why Maturin for Rust?</h3>
+
+<p><strong>Maturin</strong> is specifically designed for building Python packages with <strong>Rust extensions</strong> using PyO3 bindings:</p>
+
+<p><strong>Key differences from Cython:</strong></p>
+<ul>
+  <li><strong>Cython</strong>: Python → C → compiled binary (what this project uses)</li>
+  <li><strong>Maturin/Rust</strong>: Rust → compiled binary via PyO3 bindings</li>
+</ul>
+
+<p><strong>How Rust bindings work:</strong></p>
+<ol>
+  <li>Write performance-critical code in Rust</li>
+  <li>Use <strong>PyO3</strong> to create Python bindings (exposes Rust functions to Python)</li>
+  <li>Maturin handles compilation and wheel building automatically</li>
+  <li>Result: Fast Rust code callable from Python</li>
+</ol>
+
+<p><strong>Advantages of Rust + Maturin:</strong></p>
+<ul>
+  <li>Memory safety without garbage collection</li>
+  <li>Better performance than Cython in many cases</li>
+  <li>Modern tooling (Cargo, rustfmt, clippy)</li>
+  <li>Cross-compilation support built-in</li>
+</ul>
+
+<p><strong>When to use:</strong></p>
+<ul>
+  <li>Use <strong>Cython</strong> (this project): Optimize Python code, gradual performance improvements</li>
+  <li>Use <strong>Rust + Maturin</strong>: Writing new high-performance code from scratch, need memory safety guarantees</li>
+</ul>
+
+<h2 id="project-configuration-files">Project Configuration Files</h2>
+
+<h3 id="setuppy"><code class="language-plaintext highlighter-rouge">setup.py</code></h3>
+<p>Handles the <strong>Cython extension build</strong>. Defines the <code class="language-plaintext highlighter-rouge">harmonic_mean</code> extension module with numpy includes and compiler directives for coverage tracing.</p>
+
+<h3 id="setupcfg"><code class="language-plaintext highlighter-rouge">setup.cfg</code></h3>
+<p>Contains <strong>package metadata and configuration</strong> for all tools:</p>
+<ul>
+  <li>Package metadata (name, version, author, dependencies)</li>
+  <li>Tool configurations (mypy, flake8, black, pytest, coverage)</li>
+  <li>Tox environments (test, lint, typecheck, format)</li>
+  <li>Entry points (the <code class="language-plaintext highlighter-rouge">harmony</code> CLI command)</li>
+</ul>
+
+<h3 id="pyprojecttoml"><code class="language-plaintext highlighter-rouge">pyproject.toml</code></h3>
+<p>Specifies the <strong>build system requirements</strong>: <code class="language-plaintext highlighter-rouge">setuptools</code>, <code class="language-plaintext highlighter-rouge">wheel</code>, <code class="language-plaintext highlighter-rouge">cython</code>, and <code class="language-plaintext highlighter-rouge">numpy</code> needed to build the package.</p>
+
+<h3 id="manifestin"><code class="language-plaintext highlighter-rouge">MANIFEST.in</code></h3>
+<p>Controls which <strong>non-Python files</strong> are included in the source distribution:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">graft src</code> - includes all files in the src directory (like <code class="language-plaintext highlighter-rouge">data.json</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">recursive-exclude</code> - excludes Python cache files</li>
+</ul>
+
+<p><strong>Tip:</strong> Modern Python packages can use <code class="language-plaintext highlighter-rouge">pyproject.toml</code> for everything, but this project uses the traditional <code class="language-plaintext highlighter-rouge">setup.cfg</code> + <code class="language-plaintext highlighter-rouge">setup.py</code> approach, which is still widely used and well-supported.</p>
+
+<h2 id="building-the-package">Building the Package</h2>
+
+<p>To build the package, run the following command:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pyproject-build
+</code></pre></div></div>
+
+<p>To install the package locally, use:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> pip <span class="nb">install</span> <span class="nt">-e</span> <span class="nb">.</span>  <span class="c"># Editable install for development</span>
+</code></pre></div></div>
+
+<p>After installation, the <code class="language-plaintext highlighter-rouge">harmony</code> command is available:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>harmony  <span class="c"># Runs the harmonic mean calculator</span>
+</code></pre></div></div>
+
+<h3 id="available-tox-commands">Available Tox Commands</h3>
+
+<p><img src="https://repository-images.githubusercontent.com/68465360/5e2a7100-65b0-11e9-9207-2ac66c4446ee" alt="tox" width="200" /></p>
+
+<p>tox is a tool for running tests in multiple environments.</p>
+
+<p>Run tests on specific Python versions:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tox <span class="nt">-e</span> py39          <span class="c"># Test on Python 3.9</span>
+tox <span class="nt">-e</span> py310         <span class="c"># Test on Python 3.10</span>
+</code></pre></div></div>
+
+<p>Run quality checks:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tox <span class="nt">-e</span> format        <span class="c"># Format code with black</span>
+tox <span class="nt">-e</span> lint          <span class="c"># Lint with flake8</span>
+tox <span class="nt">-e</span> typecheck     <span class="c"># Type check with mypy</span>
+tox <span class="nt">-e</span> isort         <span class="c"># Sort imports</span>
+</code></pre></div></div>
+
+<p>Run everything in parallel:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tox <span class="nt">-p</span> <span class="nt">-e</span> py39,py310,typecheck,format,lint
+</code></pre></div></div>
+
+<h2 id="cicd-with-github-actions">CI/CD with GitHub Actions</h2>
+
+<p><img src="https://avatars.githubusercontent.com/u/44036562?s=200&amp;v=4" alt="github action logo" width="100" /></p>
+
+<p>The workflow automatically builds wheels for Linux, Windows, and macOS (Intel + Apple Silicon) using <code class="language-plaintext highlighter-rouge">cibuildwheel</code>.</p>
+
+<p><strong>Configuration:</strong></p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">env</span><span class="pi">:</span>
+  <span class="na">CIBW_ARCHS_MACOS</span><span class="pi">:</span> <span class="s2">"</span><span class="s">x86_64</span><span class="nv"> </span><span class="s">arm64"</span>  <span class="c1"># Separate wheels for Intel and Apple Silicon</span>
+  <span class="na">CIBW_BUILD</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cp39-*</span><span class="nv"> </span><span class="s">cp310-*"</span>       <span class="c1"># Python 3.9 and 3.10 only</span>
+</code></pre></div></div>
+
+<p><strong>Publishing to Test PyPI:</strong></p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git tag v0.1.0
+git push origin v0.1.0
+</code></pre></div></div>
+
+<p><strong>Install from Test PyPI:</strong></p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install</span> <span class="nt">--index-url</span> https://test.pypi.org/simple/ first-python-package
+</code></pre></div></div>
+
+<h2 id="modern-python-tooling-with-uv">Modern Python Tooling with <code class="language-plaintext highlighter-rouge">uv</code></h2>
+
+<p><img src="https://www.kdnuggets.com/wp-content/uploads/awan_uv_new_python_package_manager_3-1024x614.png" alt="uv" width="500" /></p>
+
+<p><a href="https://github.com/astral-sh/uv"><code class="language-plaintext highlighter-rouge">uv</code></a> is a next-generation Python package manager written in Rust, designed to replace multiple tools with a single, fast solution.</p>
+
+<h3 id="what-is-uv">What is <code class="language-plaintext highlighter-rouge">uv</code>?</h3>
+
+<p><code class="language-plaintext highlighter-rouge">uv</code> is an <strong>extremely fast</strong> Python package and project manager that aims to replace:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">pip</code> (package installation)</li>
+  <li><code class="language-plaintext highlighter-rouge">pip-tools</code> (dependency management)</li>
+  <li><code class="language-plaintext highlighter-rouge">virtualenv</code> / <code class="language-plaintext highlighter-rouge">venv</code> (virtual environments)</li>
+  <li><code class="language-plaintext highlighter-rouge">poetry</code> / <code class="language-plaintext highlighter-rouge">pipenv</code> (project management)</li>
+  <li><code class="language-plaintext highlighter-rouge">twine</code> (package publishing)</li>
+</ul>
+
+<p><strong>Key advantages:</strong></p>
+<ul>
+  <li>⚡ <strong>10-100x faster</strong> than pip (written in Rust)</li>
+  <li>🔒 <strong>Built-in lockfiles</strong> for reproducible builds</li>
+  <li>📦 <strong>Unified tooling</strong> - one tool for everything</li>
+  <li>🎯 <strong>Drop-in replacement</strong> - compatible with existing workflows</li>
+</ul>
+
+<h3 id="publishing-with-uv">Publishing with <code class="language-plaintext highlighter-rouge">uv</code></h3>
+
+<p>Instead of using <code class="language-plaintext highlighter-rouge">twine</code> or GitHub Actions, you can publish directly with <code class="language-plaintext highlighter-rouge">uv</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Build the package</span>
+uv build
+
+<span class="c"># Publish to PyPI</span>
+uv publish
+
+<span class="c"># Publish to Test PyPI</span>
+uv publish <span class="nt">--publish-url</span> https://test.pypi.org/legacy/
+</code></pre></div></div>
+
+<p><strong>Authentication:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set PyPI token</span>
+<span class="nb">export </span><span class="nv">UV_PUBLISH_TOKEN</span><span class="o">=</span><span class="s2">"pypi-..."</span>
+
+<span class="c"># Or use keyring</span>
+uv publish <span class="nt">--keyring-provider</span> subprocess
+</code></pre></div></div>
+
+<h3 id="uv-vs-traditional-workflow"><code class="language-plaintext highlighter-rouge">uv</code> vs Traditional Workflow</h3>
+
+<p><strong>Traditional (this project):</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> build                    <span class="c"># Build package</span>
+python <span class="nt">-m</span> twine upload dist/<span class="k">*</span>      <span class="c"># Upload to PyPI</span>
+pip <span class="nb">install</span> <span class="nt">-r</span> requirements.txt    <span class="c"># Install dependencies</span>
+</code></pre></div></div>
+
+<p><strong>With <code class="language-plaintext highlighter-rouge">uv</code>:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv build                          <span class="c"># Build package</span>
+uv publish                        <span class="c"># Upload to PyPI</span>
+uv <span class="nb">sync</span>                           <span class="c"># Install dependencies (from lockfile)</span>
+</code></pre></div></div>
+
+<h3 id="why-uv-is-the-future">Why <code class="language-plaintext highlighter-rouge">uv</code> is the Future</h3>
+
+<ol>
+  <li><strong>Speed</strong>: Resolves and installs dependencies 10-100x faster than pip</li>
+  <li><strong>Reliability</strong>: Lockfiles ensure reproducible environments across machines</li>
+  <li><strong>Simplicity</strong>: One tool instead of pip, venv, pip-tools, twine, etc.</li>
+  <li><strong>Modern</strong>: Built with Rust, designed for today’s Python ecosystem</li>
+  <li><strong>Compatible</strong>: Works with existing <code class="language-plaintext highlighter-rouge">pyproject.toml</code> and <code class="language-plaintext highlighter-rouge">requirements.txt</code></li>
+</ol>
+
+<h3 id="migrating-to-uv">Migrating to <code class="language-plaintext highlighter-rouge">uv</code></h3>
+
+<p>This project could be simplified with <code class="language-plaintext highlighter-rouge">uv</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install uv</span>
+curl <span class="nt">-LsSf</span> https://astral.sh/uv/install.sh | sh
+
+<span class="c"># Create project</span>
+uv init
+
+<span class="c"># Add dependencies</span>
+uv add numpy termcolor
+
+<span class="c"># Add dev dependencies</span>
+uv add <span class="nt">--dev</span> pytest black flake8 mypy
+
+<span class="c"># Run commands</span>
+uv run pytest
+uv run black <span class="nb">.</span>
+
+<span class="c"># Build and publish</span>
+uv build
+uv publish
+</code></pre></div></div>
+
+<p><strong>Tip:</strong> While this project uses traditional tools (setuptools, pip, twine), <strong><code class="language-plaintext highlighter-rouge">uv</code> represents the future</strong> of Python packaging. It’s production-ready and actively maintained by Astral (creators of Ruff). Consider using <code class="language-plaintext highlighter-rouge">uv</code> for new projects!</p>
+
+<h2 id="type-checking-with-mypy">Type Checking with <code class="language-plaintext highlighter-rouge">mypy</code></h2>
+
+<p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF18mjS57iuxVMTwwChBsAHKOeqApqn0EsiQ&amp;s" alt="mypy logo" width="200" /></p>
+
+<p><strong>mypy</strong> is a static type checker for Python that helps catch bugs before runtime:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tox <span class="nt">-e</span> typecheck  <span class="c"># Run mypy on this project</span>
+</code></pre></div></div>
+
+<p><strong>Configuration</strong> (in <code class="language-plaintext highlighter-rouge">setup.cfg</code>):</p>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[mypy]</span>
+<span class="py">python_version</span> <span class="p">=</span> <span class="s">3.10</span>
+<span class="py">warn_unused_configs</span> <span class="p">=</span> <span class="s">True</span>
+<span class="py">check_untyped_defs</span> <span class="p">=</span> <span class="s">True</span>
+</code></pre></div></div>
+
+<p><strong>Why use type checking?</strong></p>
+<ul>
+  <li>🐛 <strong>Catch bugs early</strong> - Find type errors before running code</li>
+  <li>📝 <strong>Better documentation</strong> - Type hints serve as inline documentation</li>
+  <li>🔧 <strong>IDE support</strong> - Better autocomplete and refactoring</li>
+  <li>🛡️ <strong>Safer refactoring</strong> - Confidence when changing code</li>
+</ul>
+
+<p><strong>Example from this project:</strong></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">harmonic_mean</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="s">"""Calculate harmonic mean with type hints."""</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numbers</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>mypy verifies that you pass a list of floats and get a float back, catching type mismatches at development time.</p>
+
+<p><strong>Tip:</strong> Modern Python projects should use type hints and mypy. They’re optional but highly recommended for maintainability and catching bugs early.</p>
+
+<h2 id="notes">Notes</h2>
+
+<h3 id="other-tools">Other Tools</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">black</code> doesn’t support configuration with <code class="language-plaintext highlighter-rouge">setup.cfg</code> (uses <code class="language-plaintext highlighter-rouge">pyproject.toml</code> instead).</li>
+  <li><code class="language-plaintext highlighter-rouge">mccabe</code> package measures the complexity of the code, another alternative is <code class="language-plaintext highlighter-rouge">radon</code>.</li>
+  <li>For local wheel builds: <code class="language-plaintext highlighter-rouge">python -m cibuildwheel --output-dir wheels</code></li>
+</ul>
+
+<h3 id="about-egg-and-egg-info-files">About <code class="language-plaintext highlighter-rouge">.egg</code> and <code class="language-plaintext highlighter-rouge">.egg-info</code> files</h3>
+
+<p><strong><code class="language-plaintext highlighter-rouge">.egg-info</code> directories</strong> (like <code class="language-plaintext highlighter-rouge">src/first_python_package.egg-info/</code>) are created during package installation and contain metadata about the installed package. They’re still used today.</p>
+
+<p><strong><code class="language-plaintext highlighter-rouge">.egg</code> files</strong> were the predecessor to wheels (<code class="language-plaintext highlighter-rouge">.whl</code>):</p>
+<ul>
+  <li>Used by <code class="language-plaintext highlighter-rouge">easy_install</code> (now deprecated)</li>
+  <li>Essentially ZIP files with package code + metadata</li>
+  <li><strong>Replaced by wheels</strong> which are faster, more reliable, and don’t execute code during installation</li>
+</ul>
+
+<p><strong>Note:</strong> You may see <code class="language-plaintext highlighter-rouge">.egg-info</code> directories in your project - this is normal! They’re created by <code class="language-plaintext highlighter-rouge">pip install -e .</code> and contain package metadata. Modern Python uses <strong>wheels</strong> (<code class="language-plaintext highlighter-rouge">.whl</code>) for distribution, not <code class="language-plaintext highlighter-rouge">.egg</code> files.</p>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><a href="https://github.com/deburky/python-packaging">GitHub Repository</a></li>
+  <li><a href="https://pypackages.com/">Publishing Python Packages Book</a></li>
+  <li><a href="https://test.pypi.org/">Test PyPI</a></li>
+</ul>
+
+<h2 id="license">License</h2>
+
+<p>MIT License - see <a href="https://github.com/deburky/python-packaging/blob/main/LICENSE">LICENSE</a> file for details.</p>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/deburky/python-packaging"></a> is maintained by <a href=""></a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
